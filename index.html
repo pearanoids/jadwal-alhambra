@@ -1,0 +1,585 @@
+<!-- Made with ❤️ @pearanoids -->
+<html lang="id">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+  <title>Jadwal Kerja</title>  
+  
+  <style>  
+    
+    *{  
+      margin:0;  
+      padding:0;  
+      box-sizing:border-box;  
+    }  
+    
+    body{  
+      background:#0d1117;  
+      color:#e5e7eb;  
+      font-family:Inter, Arial, sans-serif;  
+      padding:16px;  
+      
+      display:flex;  
+      justify-content:center;  
+      align-items:center;  
+      min-height:100vh;  
+    }  
+    
+    .container{  
+      max-width:760px;  
+      width:100%;  
+    }  
+    
+    .header{  
+      margin-bottom:20px;  
+      text-align:center; 
+    }  
+    
+    .title{  
+      font-size:28px;  
+      font-weight:800;  
+      color:#fff;  
+      letter-spacing:-0.5px;  
+    }  
+    
+    .subtitle{  
+      margin-top:5px;  
+      color:#8b93a7;  
+      font-size:14px;  
+    }  
+    
+    .employee{  
+      background:#151922;  
+      border:1px solid #252d3d;  
+      border-radius:20px;  
+      overflow:hidden;  
+      margin-bottom:14px;  
+      transition:0.25s ease;  
+    }  
+    
+    .employee.active{  
+      border-color:#3b82f6;  
+      box-shadow:  
+      0 0 0 1px rgba(59,130,246,0.15),  
+      0 10px 25px rgba(0,0,0,0.35);  
+    }  
+    
+    .employee-header{  
+      padding:18px;  
+      cursor:pointer;  
+      display:flex;  
+      align-items:center;  
+      justify-content:center; 
+      position:relative; 
+      transition:0.2s;  
+    }  
+    
+    .employee-header:hover{  
+      background:#1a2030;  
+    }  
+    
+    .name{  
+      font-size:19px;  
+      font-weight:700;  
+      color:#fff;  
+      text-align:center;
+    }  
+    
+    .mini-text{  
+      margin-top:3px;  
+      font-size:13px;  
+      color:#8b93a7;  
+    }  
+    
+    .arrow{  
+      font-size:22px;  
+      color:#8b93a7;  
+      transition:0.3s;  
+      position:absolute; 
+      right:18px; 
+    }  
+    
+    .employee.active .arrow{  
+      transform:rotate(180deg);  
+      color:#fff;  
+    }  
+    
+    .content{  
+      max-height:0;  
+      overflow:hidden;  
+      transition:max-height 0.45s ease;  
+      background:#11151d;  
+    }  
+    
+    .employee.active .content{  
+      max-height:2500px;  
+    }  
+    
+    .inner{  
+      padding:16px;  
+    }  
+    
+    .schedule{  
+      display:flex;  
+      flex-direction:column;  
+      gap:12px;  
+    }  
+    
+    .day{  
+      background:#1a2030;  
+      border:1px solid #2b3447;  
+      border-radius:16px;  
+      padding:14px;  
+      transition:0.2s;  
+    }  
+    
+    .day:hover{  
+      border-color:#3b82f6;  
+      transform:translateY(-1px);  
+    }  
+    
+    .top{  
+      position:relative;  
+      display:flex;  
+      align-items:center;  
+      justify-content:space-between;  
+      margin-bottom:14px;  
+    }  
+    
+    .day-name{  
+      font-size:15px;  
+      font-weight:700;  
+      color:#fff;  
+      text-transform:uppercase;  
+      z-index:2;  
+    }  
+    
+    .date{  
+      position:absolute;  
+      left:50%;  
+      transform:translateX(-50%);  
+      font-size:13px;  
+      color:#8b93a7;  
+      text-align:center;  
+      width:max-content;  
+    }  
+    
+    .time{  
+      font-size:20px;  
+      color:#ffffff;  
+      font-weight:700;  
+      text-align:center;  
+    }  
+    
+    .badge{  
+      display:inline-block;  
+      padding:4px 10px;  
+      border-radius:6px;  
+      font-size:12px;  
+      font-weight:700;  
+      margin-top:0;  
+      text-transform:uppercase;  
+      z-index:2;  
+    }  
+    
+    .s1{  
+      background:#1e3a5f;  
+      color:#93c5fd;  
+    }  
+    
+    .s2{  
+      background:#4a3811;  
+      color:#facc15;  
+    }  
+    
+    .s3{  
+      background:#4a1f45;  
+      color:#f9a8d4;  
+    }  
+    
+    .off{  
+      background:#3d1f1f;  
+      color:#fca5a5;  
+    }  
+    
+    .footer{  
+      margin-top:15px;  
+      padding-top:15px;  
+      border-top:1px solid #262e40;  
+      color:#8b93a7;  
+      font-size:13px;  
+      text-align:center;  
+    }  
+    
+    .footer span{  
+      color:#fff;  
+      font-weight:600;  
+    }  
+    
+    .employee.active{
+      width:100%;
+    }
+    @media(max-width:600px){  
+    
+      body{  
+        padding:13px;  
+      }  
+    
+      .title{  
+        font-size:24px;  
+      }  
+    
+      .employee-header{  
+        padding:16px;  
+      }  
+    
+      .name{  
+        font-size:18px;  
+      }  
+    
+      .time{  
+        font-size:18px;  
+      }  
+    
+      .date{  
+        font-size:12px;  
+      }  
+    
+      .arrow{  
+        right:16px;  
+      }  
+        
+    }  
+    
+  </style>  
+</head>  
+  
+<body>  
+  
+  <div class="container">  
+  
+    <div class="header">  
+      <div class="title">Jadwal Kerja</div>  
+      <div class="subtitle">Mulai Senin, 11 Mei 2026</div>  
+    </div>  
+  
+    <!-- ICHA -->  
+    <div class="employee">  
+  
+      <div class="employee-header">  
+        <div>  
+          <div class="name">ICHA</div>  
+        </div>  
+  
+        <div class="arrow">⌄</div>  
+      </div>  
+  
+      <div class="content">  
+  
+        <div class="inner">  
+  
+          <div class="schedule">  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">SENIN</div>  
+                <div class="date">11-05-2026</div>  
+                <div class="badge s3">SHIFT 3</div>  
+              </div>  
+              <div class="time">13:30 - 19:30</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">SELASA</div>  
+                <div class="date">12-05-2026</div>  
+                <div class="badge s1">SHIFT 1</div>  
+              </div>  
+              <div class="time">07:30 - 13:30</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">RABU</div>  
+                <div class="date">13-05-2026</div>  
+                <div class="badge s2">SHIFT 2</div>  
+              </div>  
+              <div class="time">10:00 - 16:00</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">KAMIS</div>  
+                <div class="date">14-05-2026</div>  
+                <div class="badge s2">SHIFT 2</div>  
+              </div>  
+              <div class="time">12:30 - 19:30</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">JUMAT</div>  
+                <div class="date">15-05-2026</div>  
+                <div class="badge off">OFF</div>  
+              </div>  
+              <div class="time">Hari Libur</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">SABTU</div>  
+                <div class="date">16-05-2026</div>  
+                <div class="badge s1">SHIFT 1</div>  
+              </div>  
+              <div class="time">07:30 - 13:30</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">MINGGU</div>  
+                <div class="date">17-05-2026</div>  
+                <div class="badge s1">SHIFT 1</div>  
+              </div>  
+              <div class="time">07:30 - 14:30</div>  
+            </div>  
+  
+          </div>  
+  
+          <div class="footer">  
+            Hari libur : <span>Jumat</span>  
+          </div>  
+  
+        </div>  
+  
+      </div>  
+  
+    </div>  
+  
+    <!-- SYDNEY -->  
+    <div class="employee">  
+  
+      <div class="employee-header">  
+        <div>  
+          <div class="name">SYDNEY</div>  
+        </div>  
+  
+        <div class="arrow">⌄</div>  
+      </div>  
+  
+      <div class="content">  
+  
+        <div class="inner">  
+  
+          <div class="schedule">  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">SENIN</div>  
+                <div class="date">11-05-2026</div>  
+                <div class="badge s1">SHIFT 1</div>  
+              </div>  
+              <div class="time">07:30 - 13:30</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">SELASA</div>  
+                <div class="date">12-05-2026</div>  
+                <div class="badge s2">SHIFT 2</div>  
+              </div>  
+              <div class="time">10:00 - 16:00</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">RABU</div>  
+                <div class="date">13-05-2026</div>  
+                <div class="badge s3">SHIFT 3</div>  
+              </div>  
+              <div class="time">13:30 - 19:30</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">KAMIS</div>  
+                <div class="date">14-05-2026</div>  
+                <div class="badge off">OFF</div>  
+              </div>  
+              <div class="time">Hari Libur</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">JUMAT</div>  
+                <div class="date">15-05-2026</div>  
+                <div class="badge s1">SHIFT 1</div>  
+              </div>  
+              <div class="time">07:30 - 14:30</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">SABTU</div>  
+                <div class="date">16-05-2026</div>  
+                <div class="badge s3">SHIFT 3</div>  
+              </div>  
+              <div class="time">13:30 - 19:30</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">MINGGU</div>  
+                <div class="date">17-05-2026</div>  
+                <div class="badge s2">SHIFT 2</div>  
+              </div>  
+              <div class="time">12:30 - 19:30</div>  
+            </div>  
+  
+          </div>  
+  
+          <div class="footer">  
+            Hari libur : <span>Kamis</span>  
+          </div>  
+  
+        </div>  
+  
+      </div>  
+  
+    </div>  
+  
+    <!-- HIKMAH -->  
+    <div class="employee">  
+  
+      <div class="employee-header">  
+        <div>  
+          <div class="name">HIKMAH</div>  
+        </div>  
+  
+        <div class="arrow">⌄</div>  
+      </div>  
+  
+      <div class="content">  
+  
+        <div class="inner">  
+  
+          <div class="schedule">  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">SENIN</div>  
+                <div class="date">11-05-2026</div>  
+                <div class="badge s2">SHIFT 2</div>  
+              </div>  
+              <div class="time">10:00 - 16:00</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">SELASA</div>  
+                <div class="date">12-05-2026</div>  
+                <div class="badge s3">SHIFT 3</div>  
+              </div>  
+              <div class="time">13:30 - 19:30</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">RABU</div>  
+                <div class="date">13-05-2026</div>  
+                <div class="badge s1">SHIFT 1</div>  
+              </div>  
+              <div class="time">07:30 - 13:30</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">KAMIS</div>  
+                <div class="date">14-05-2026</div>  
+                <div class="badge s1">SHIFT 1</div>  
+              </div>  
+              <div class="time">07:30 - 14:30</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">JUMAT</div>  
+                <div class="date">15-05-2026</div>  
+                <div class="badge s2">SHIFT 2</div>  
+              </div>  
+              <div class="time">12:30 - 19:30</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">SABTU</div>  
+                <div class="date">16-05-2026</div>  
+                <div class="badge s2">SHIFT 2</div>  
+              </div>  
+              <div class="time">10:00 - 16:00</div>  
+            </div>  
+  
+            <div class="day">  
+              <div class="top">  
+                <div class="day-name">MINGGU</div>  
+                <div class="date">17-05-2026</div>  
+                <div class="badge off">OFF</div>  
+              </div>  
+              <div class="time">Hari Libur</div>  
+            </div>  
+  
+          </div>  
+  
+          <div class="footer">  
+            Hari libur : <span>Minggu</span>  
+          </div>  
+  
+        </div>  
+  
+      </div>  
+  
+    </div>  
+  
+  </div>  
+  
+  <script>
+  
+    const employees = document.querySelectorAll('.employee');
+    const headerSection = document.querySelector('.header');
+  
+    employees.forEach(employee => {
+  
+      const header = employee.querySelector('.employee-header');
+  
+      header.addEventListener('click', () => {
+  
+        const active = employee.classList.contains('active');
+  
+        employees.forEach(item => {
+          item.classList.remove('active');
+          item.style.display = 'block';
+        });
+  
+        headerSection.style.display = 'block';
+  
+        if(!active){
+  
+          employee.classList.add('active');
+  
+          employees.forEach(item => {
+            if(item !== employee){
+              item.style.display = 'none';
+            }
+          });
+  
+          headerSection.style.display = 'none';
+  
+        }
+  
+      });
+  
+    });
+  
+  </script>
+  
+</body>  
+</html>
