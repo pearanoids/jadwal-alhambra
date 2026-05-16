@@ -1,4 +1,3 @@
-<!-- Made with ❤️ @pearanoids -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -208,7 +207,7 @@
       <div class="setting-item">
         <h3>Tandai Hari Libur</h3>
         <p style="font-size:8px;color:#8b93a7;margin-bottom:6px">
-          Hari yang ditandai akan menampilkan opsi shift S2 (OFF 1) di tab Atur Jadwal.
+          Pilih untuk mengatur hari libur.
         </p>
         <div class="libur-group">
           <label><input type="checkbox" class="libur-cb" value="Senin"   /><span>SENIN</span></label>
@@ -323,7 +322,7 @@
         const isLibur = hariLibur.includes(hari);
 
         const shiftOpts = isLibur
-          ? [{key:"S1",label:"S1"},{key:"S2O",label:"S2 OFF1"},{key:"OFF",label:"OFF"}]
+          ? [{key:"S1",label:"S1"},{key:"S2O",label:"S2 (OFF 1)"},{key:"OFF",label:"OFF"}]
           : [{key:"S1",label:"S1"},{key:"S2",label:"S2"},{key:"S3",label:"S3"},{key:"OFF",label:"OFF"}];
 
         // Ambil nilai tersimpan
