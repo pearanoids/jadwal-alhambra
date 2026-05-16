@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jadwal Kerja</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:#0d1117;color:#e5e7eb;font-family:Inter,Arial,sans-serif;padding:16px;display:flex;justify-content:center;align-items:center;min-height:100vh}
+    .container{max-width:760px;width:100%;position:relative}
+    .admin-btn{position:fixed;top:14px;right:14px;height:36px;padding:0 14px;border:none;border-radius:10px;background:#2563eb;border:1px solid #3b82f6;color:#fff;font-size:13px;font-weight:700;cursor:pointer;z-index:999;transition:0.2s}
+    .admin-btn:hover{background:#3b82f6}
+    .admin-btn.hide{opacity:0;pointer-events:none}
+    .login-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:none;justify-content:center;align-items:center;z-index:1000}
+    .login-box{width:100%;max-width:320px;background:#151922;border:1px solid #252d3d;border-radius:18px;padding:20px;position:relative}
+    .close-login{position:absolute;top:10px;right:10px;width:28px;height:28px;border:none;border-radius:8px;background:#21262d;color:white;font-size:14px;font-weight:bold;cursor:pointer}
+    .login-title{text-align:center;font-size:18px;font-weight:800;color:#fff;margin-bottom:14px}
+    .login-input{width:100%;height:42px;background:#0f131b;border:1px solid #2b3447;border-radius:12px;color:white;padding:0 12px;outline:none;margin-bottom:10px;font-size:14px}
+    .login-input:focus{border-color:#3b82f6}
+    .login-submit{width:100%;height:42px;border:none;border-radius:12px;background:#2563eb;color:white;font-weight:700;font-size:14px;cursor:pointer;transition:0.2s}
+    .login-submit:hover{background:#3b82f6}
+    .login-submit:disabled{opacity:0.55;cursor:not-allowed}
+    .login-error{color:#fca5a5;font-size:12px;text-align:center;margin-top:8px;min-height:18px}
+    .header{margin-bottom:20px;text-align:center}
+    .title{font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.5px}
+    .subtitle{margin-top:5px;color:#8b93a7;font-size:14px}
+    .employee{background:#151922;border:1px solid #252d3d;border-radius:20px;overflow:hidden;margin-bottom:14px;transition:0.25s ease}
+    .employee.active{border-color:#3b82f6;box-shadow:0 0 0 1px rgba(59,130,246,0.15),0 10px 25px rgba(0,0,0,0.35)}
+    .employee-header{padding:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;transition:0.2s}
+    .employee-header:hover{background:#1a2030}
+    .name{font-size:19px;font-weight:700;color:#fff;text-align:center}
+    .arrow{font-size:22px;color:#8b93a7;transition:0.3s;position:absolute;right:18px}
+    .employee.active .arrow{transform:rotate(180deg);color:#fff}
+    .content{max-height:0;overflow:hidden;transition:max-height 0.45s ease;background:#11151d}
+    .employee.active .content{max-height:2500px}
+    .inner{padding:16px}
+    .schedule{display:flex;flex-direction:column;gap:12px}
+    .day{background:#1a2030;border:1px solid #2b3447;border-radius:16px;padding:14px;transition:0.2s}
+    .day:hover{border-color:#3b82f6;transform:translateY(-1px)}
+    .top{position:relative;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .day-name{font-size:15px;font-weight:700;color:#fff;text-transform:uppercase;z-index:2}
+    .date{position:absolute;left:50%;transform:translateX(-50%);font-size:13px;color:#8b93a7;text-align:center;width:max-content}
+    .time{font-size:20px;color:#ffffff;font-weight:700;text-align:center}
+    .badge{display:inline-block;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;text-transform:uppercase;z-index:2}
+    .badge-off{background:#3d1f1f;color:#fca5a5}
+    .footer{margin-top:15px;padding-top:15px;border-top:1px solid #262e40;color:#8b93a7;font-size:13px;text-align:center}
+    .footer span{color:#fff;font-weight:600}
+    .loading-msg{text-align:center;padding:60px 20px;color:#8b93a7;font-size:15px}
+    @media(max-width:600px){
+      body{padding:13px}
+      .title{font-size:24px}
+      .employee-header{padding:16px}
+      .name{font-size:18px}
+      .time{font-size:18px}
+      .date{font-size:12px}
+      .arrow{right:16px}
+    }
+  </style>
+</head>
+<body>
+
+<button class="admin-btn" id="adminBtn" onclick="openLogin()">Admin Login</button>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <button class="close-login" onclick="closeLogin()">✕</button>
+    <div class="login-title">Login Admin</div>
+    <input type="email" class="login-input" id="email" placeholder="Email" autocomplete="username" />
+    <input type="password" class="login-input" id="password" placeholder="Password" autocomplete="current-password" />
+    <button class="login-submit" id="loginBtn" onclick="loginAdmin()">LOGIN</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<div class="container" id="app">
+  <div class="loading-msg">⏳ Memuat jadwal...</div>
+</div>
+
+<script type="module">
+  import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, onValue }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { getAuth, signInWithEmailAndPassword }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyCoO_viP4_7CjDRJIK-f4wOfkgZgM-2ab8",
+    authDomain:        "jadwal-alhambra.firebaseapp.com",
+    databaseURL:       "https://jadwal-alhambra-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId:         "jadwal-alhambra",
+    storageBucket:     "jadwal-alhambra.firebasestorage.app",
+    messagingSenderId: "268642441303",
+    appId:             "1:268642441303:web:0e851cdd27daf4d1a36b12"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const db   = getDatabase(app);
+  const auth = getAuth(app);
+
+  const HARI = ["SENIN","SELASA","RABU","KAMIS","JUMAT","SABTU","MINGGU"];
+  const pad  = n => String(n).padStart(2, "0");
+
+  // ─── Date helpers ────────────────────────────────────────
+  function formatTgl(d) {
+    return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
+  }
+
+  function getTanggals(tanggalMulai) {
+    const start = new Date(tanggalMulai + "T00:00:00");
+    return HARI.map((_, i) => {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      return formatTgl(d);
+    });
+  }
+
+  function getSubjudul(tanggalMulai, override) {
+    if (override) return override;
+    const s = new Date(tanggalMulai + "T00:00:00");
+    const e = new Date(s);
+    e.setDate(s.getDate() + 6);
+    const fmt = d => d.toLocaleDateString("id-ID", {
+      day:"numeric", month:"long", year:"numeric"
+    });
+    return `${fmt(s)} – ${fmt(e)}`;
+  }
+
+  // ─── Render helpers ───────────────────────────────────────
+  function renderBadge(kode, shifts) {
+    if (kode === "OFF")
+      return `<div class="badge badge-off">OFF</div>`;
+    const s = shifts[kode];
+    if (!s)
+      return `<div class="badge" style="background:#333;color:#aaa">${kode}</div>`;
+    return `<div class="badge" style="background:${s.bg};color:${s.color}">${s.label}</div>`;
+  }
+
+  function renderJam(kode, shifts) {
+    if (kode === "OFF") return "Hari Libur";
+    return (shifts[kode] || {}).jam || "-";
+  }
+
+  function renderEmployee(nama, rawArr, tanggals, shifts) {
+    const arr = Array.isArray(rawArr) ? rawArr : Object.values(rawArr);
+
+    const liburList = HARI.filter((_, i) => arr[i] === "OFF");
+    const footer = liburList.length
+      ? `Hari libur : <span>${liburList.join(", ")}</span>`
+      : `<span>Tidak ada hari libur minggu ini</span>`;
+
+    const cards = HARI.map((hari, i) => {
+      const kode = arr[i] || "OFF";
+      return `
+        <div class="day">
+          <div class="top">
+            <div class="day-name">${hari}</div>
+            <div class="date">${tanggals[i]}</div>
+            ${renderBadge(kode, shifts)}
+          </div>
+          <div class="time">${renderJam(kode, shifts)}</div>
+        </div>`;
+    }).join("");
+
+    return `
+      <div class="employee">
+        <div class="employee-header">
+          <div class="name">${nama.toUpperCase()}</div>
+          <div class="arrow">&#8964;</div>
+        </div>
+        <div class="content">
+          <div class="inner">
+            <div class="schedule">${cards}</div>
+            <div class="footer">${footer}</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function render(cfg) {
+    const { tanggalMulai, tampilan, shifts, jadwal } = cfg;
+    if (!jadwal || !shifts || !tanggalMulai) return;
+
+    const tanggals = getTanggals(tanggalMulai);
+
+    let html = `
+      <div class="header">
+        <div class="title">${tampilan?.judul || "Jadwal Kerja"}</div>
+        <div class="subtitle">${getSubjudul(tanggalMulai, tampilan?.subjudul)}</div>
+      </div>`;
+
+    for (const [nama, arr] of Object.entries(jadwal)) {
+      html += renderEmployee(nama, arr, tanggals, shifts);
+    }
+
+    document.getElementById("app").innerHTML = html;
+    setupAccordion();
+  }
+
+  function setupAccordion() {
+    const emps   = document.querySelectorAll(".employee");
+    const header = document.querySelector(".header");
+    const btn    = document.getElementById("adminBtn");
+
+    emps.forEach(emp => {
+      emp.querySelector(".employee-header").addEventListener("click", () => {
+        const wasActive = emp.classList.contains("active");
+
+        // Reset semua
+        emps.forEach(e => { e.classList.remove("active"); e.style.display = "block"; });
+        header.style.display = "block";
+        btn.classList.remove("hide");
+
+        if (!wasActive) {
+          emp.classList.add("active");
+          emps.forEach(e => { if (e !== emp) e.style.display = "none"; });
+          header.style.display = "none";
+          btn.classList.add("hide");
+        }
+      });
+    });
+  }
+
+  // ─── Firebase: listen realtime ────────────────────────────
+  onValue(ref(db, "config"), snap => {
+    const cfg = snap.val();
+    if (cfg) {
+      render(cfg);
+    } else {
+      document.getElementById("app").innerHTML = `
+        <div class="loading-msg">
+          Belum ada jadwal yang dikonfigurasi.<br>
+          Silakan login sebagai Admin untuk mulai mengisi jadwal.
+        </div>`;
+    }
+  }, err => {
+    console.error(err);
+    document.getElementById("app").innerHTML = `
+      <div class="loading-msg">Gagal memuat jadwal. Periksa koneksi internet.</div>`;
+  });
+
+  // ─── Auth functions (global via window) ───────────────────
+  window.openLogin = () => {
+    document.getElementById("loginOverlay").style.display = "flex";
+    document.getElementById("loginError").textContent = "";
+    document.getElementById("email").focus();
+  };
+
+  window.closeLogin = () => {
+    document.getElementById("loginOverlay").style.display = "none";
+  };
+
+  window.loginAdmin = async () => {
+    const email    = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const btn      = document.getElementById("loginBtn");
+    const err      = document.getElementById("loginError");
+
+    if (!email || !password) {
+      err.textContent = "Email dan password wajib diisi.";
+      return;
+    }
+
+    btn.textContent = "Logging in...";
+    btn.disabled    = true;
+    err.textContent = "";
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = "admin.html";
+    } catch {
+      err.textContent = "Email atau password salah.";
+      btn.textContent = "LOGIN";
+      btn.disabled    = false;
+    }
+  };
+
+  // Enter key to submit
+  document.getElementById("password").addEventListener("keydown", e => {
+    if (e.key === "Enter") window.loginAdmin();
+  });
+
+  document.getElementById("loginOverlay").addEventListener("click", e => {
+    if (e.target === e.currentTarget) window.closeLogin();
+  });
+</script>
+</body>
+</html>
+
