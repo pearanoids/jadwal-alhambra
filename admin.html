@@ -104,15 +104,15 @@
   .shift-group input[value="OFF"]:checked + label{background:maroon;border-color:#9b1c1c;color:#fca5a5}
 
   /* Hari libur checkboxes */
-  .libur-group{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+   .libur-group{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:4px}
   .libur-group label{
-    height:22px;padding:0 8px;background:#21262d;border:1px solid #30363d;
-    border-radius:4px;display:flex;align-items:center;gap:5px;font-size:8px;
-    cursor:pointer;transition:0.15s;
+    height:26px;padding:0 2px;background:#21262d;border:1px solid #30363d;
+    border-radius:4px;display:flex;align-items:center;justify-content:center;
+    gap:3px;font-size:7px;cursor:pointer;transition:0.15s;
   }
   .libur-group label:hover{border-color:#3b82f6}
   .libur-group input[type="checkbox"]{
-    width:11px;height:11px;accent-color:#2563eb;cursor:pointer;
+    width:10px;height:10px;accent-color:#2563eb;cursor:pointer;flex-shrink:0;
   }
   .libur-group input[type="checkbox"]:checked + span{color:#93c5fd}
 
