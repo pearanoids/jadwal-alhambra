@@ -64,6 +64,15 @@
   /* Setting forms */
   .setting-list{display:flex;flex-direction:column;gap:4px}
   .setting-item{background:#161b22;border:1px solid #30363d;border-radius:6px;padding:8px}
+
+  /* ── Shift item header: title kiri, toggle kanan ── */
+  .shift-item-header{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:5px;
+  }
+  .shift-item-header h3{margin-bottom:0}
+  .shift-toggle-wrap{display:flex;align-items:center;gap:5px;flex-shrink:0}
+
   .setting-item h3{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#8b93a7;margin-bottom:5px}
   .setting-item input[type="text"],
   .setting-item input[type="date"]{
@@ -71,6 +80,11 @@
     border-radius:4px;color:white;padding:0 8px;font-size:11px;outline:none;
   }
   .setting-item input:focus{border-color:#3b82f6}
+
+  /* Dimmed input when shift is inactive */
+  .shift-input-wrap.inactive input{
+    opacity:0.35;pointer-events:none;
+  }
 
   /* ── Karyawan list ── */
   .karyawan-note{font-size:8px;color:#8b93a7;margin-bottom:7px;line-height:1.5}
@@ -97,8 +111,6 @@
   .add-karyawan-btn:hover{border-color:#3b82f6;color:#3b82f6}
 
   /* ── Custom Shift list ── */
-
-  /* Header kolom & baris item pakai grid yang sama persis */
   .cs-col-header,
   .custom-shift-item{
     display:grid;
@@ -116,7 +128,6 @@
     padding-left:2px;
   }
 
-  /* Semua input di dalam custom-shift mengikuti lebar cell grid */
   .cs-key,
   .cs-label,
   .cs-jam{
@@ -180,6 +191,12 @@
   }
   .toggle-switch input:checked + .toggle-slider{background:#238636}
   .toggle-switch input:checked + .toggle-slider::before{transform:translateX(18px)}
+
+  /* Smaller toggle for per-shift use */
+  .toggle-switch.sm{width:32px;height:18px;}
+  .toggle-switch.sm .toggle-slider::before{width:12px;height:12px;left:3px;bottom:3px;}
+  .toggle-switch.sm input:checked + .toggle-slider::before{transform:translateX(14px)}
+  .toggle-badge.sm{font-size:7px;padding:1px 5px;min-width:24px;}
 
   /* Jadwal section */
   .jadwal-container{display:flex;flex-direction:column;gap:4px}
@@ -289,22 +306,58 @@
   <div class="page" id="jamPage">
     <div class="setting-list">
 
+      <!-- S1 -->
       <div class="setting-item">
-        <h3>Shift 1 (S1)</h3>
-        <input type="text" id="jam-S1" placeholder="Contoh: 08:00 - 16:00" />
+        <div class="shift-item-header">
+          <h3>Shift 1 (S1)</h3>
+          <div class="shift-toggle-wrap">
+            <span class="toggle-badge sm on" id="badge-active-S1">ON</span>
+            <label class="toggle-switch sm">
+              <input type="checkbox" id="active-S1" checked onchange="onShiftActiveChange('S1')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="shift-input-wrap" id="wrap-S1">
+          <input type="text" id="jam-S1" placeholder="Contoh: 08:00 - 16:00" />
+        </div>
       </div>
 
+      <!-- S2 -->
       <div class="setting-item">
-        <h3>Shift 2 (S2)</h3>
-        <input type="text" id="jam-S2" placeholder="Contoh: 16:00 - 00:00" />
+        <div class="shift-item-header">
+          <h3>Shift 2 (S2)</h3>
+          <div class="shift-toggle-wrap">
+            <span class="toggle-badge sm on" id="badge-active-S2">ON</span>
+            <label class="toggle-switch sm">
+              <input type="checkbox" id="active-S2" checked onchange="onShiftActiveChange('S2')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="shift-input-wrap" id="wrap-S2">
+          <input type="text" id="jam-S2" placeholder="Contoh: 16:00 - 00:00" />
+        </div>
       </div>
 
+      <!-- S2O -->
       <div class="setting-item">
-        <h3>Shift 2 OFF 1 (S2O) — khusus hari libur</h3>
-        <input type="text" id="jam-S2O" placeholder="Contoh: 16:00 - 00:00" />
+        <div class="shift-item-header">
+          <h3>Shift 2 OFF 1 (S2O) — khusus hari libur</h3>
+          <div class="shift-toggle-wrap">
+            <span class="toggle-badge sm on" id="badge-active-S2O">ON</span>
+            <label class="toggle-switch sm">
+              <input type="checkbox" id="active-S2O" checked onchange="onShiftActiveChange('S2O')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="shift-input-wrap" id="wrap-S2O">
+          <input type="text" id="jam-S2O" placeholder="Contoh: 16:00 - 00:00" />
+        </div>
       </div>
 
-      <!-- Toggle shift hari libur -->
+      <!-- Toggle mode libur (tidak ada perubahan) -->
       <div class="setting-item">
         <h3>Mode Shift Hari Libur</h3>
         <div class="toggle-row">
@@ -323,14 +376,38 @@
         </div>
       </div>
 
+      <!-- S3 -->
       <div class="setting-item">
-        <h3>Shift 3 (S3)</h3>
-        <input type="text" id="jam-S3" placeholder="Contoh: 00:00 - 08:00" />
+        <div class="shift-item-header">
+          <h3>Shift 3 (S3)</h3>
+          <div class="shift-toggle-wrap">
+            <span class="toggle-badge sm on" id="badge-active-S3">ON</span>
+            <label class="toggle-switch sm">
+              <input type="checkbox" id="active-S3" checked onchange="onShiftActiveChange('S3')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="shift-input-wrap" id="wrap-S3">
+          <input type="text" id="jam-S3" placeholder="Contoh: 00:00 - 08:00" />
+        </div>
       </div>
 
+      <!-- FD -->
       <div class="setting-item">
-        <h3>Full Day (FD)</h3>
-        <input type="text" id="jam-FD" placeholder="Contoh: 08:00 - 00:00" />
+        <div class="shift-item-header">
+          <h3>Full Day (FD)</h3>
+          <div class="shift-toggle-wrap">
+            <span class="toggle-badge sm on" id="badge-active-FD">ON</span>
+            <label class="toggle-switch sm">
+              <input type="checkbox" id="active-FD" checked onchange="onShiftActiveChange('FD')">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="shift-input-wrap" id="wrap-FD">
+          <input type="text" id="jam-FD" placeholder="Contoh: 08:00 - 00:00" />
+        </div>
       </div>
 
       <!-- Custom Shifts -->
@@ -423,11 +500,8 @@
   const auth = getAuth(app);
 
   const HARI_LIST  = ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"];
-
-  // Keys that are built-in (not user-custom)
   const FIXED_KEYS = new Set(["S1","S2","S2O","S3","FD"]);
 
-  // Auto-color palette for custom shifts (cycles if > 8)
   const CUSTOM_COLORS = [
     {bg:"#1e2f5e", color:"#a5b4fc"},
     {bg:"#2d1b0e", color:"#fdba74"},
@@ -443,7 +517,10 @@
   let hariLibur        = ["Kamis","Jumat","Minggu"];
   let useLiburShift    = true;
   let currentJadwal    = null;
-  let customShiftsList = []; // [{key, label, jam}]
+  let customShiftsList = [];
+
+  // ── Per-shift active state (default semua ON) ──────────
+  let activeShifts = {S1: true, S2: true, S2O: true, S3: true, FD: true};
 
   // ─── Auth ─────────────────────────────────────────────────
   onAuthStateChanged(auth, async user => {
@@ -464,14 +541,12 @@
       if (!snap.exists()) return;
       const cfg = snap.val();
 
-      // Karyawan
       if (cfg.karyawan) {
         KARYAWAN = Array.isArray(cfg.karyawan)
           ? cfg.karyawan
           : Object.values(cfg.karyawan);
       }
 
-      // Shifts
       if (cfg.shifts) {
         document.getElementById("jam-S1").value  = cfg.shifts.S1?.jam  || "";
         document.getElementById("jam-S2").value  = cfg.shifts.S2?.jam  || "";
@@ -479,24 +554,32 @@
         document.getElementById("jam-S3").value  = cfg.shifts.S3?.jam  || "";
         document.getElementById("jam-FD").value  = cfg.shifts.FD?.jam  || "";
 
-        // Custom shifts = any key NOT in FIXED_KEYS
         customShiftsList = Object.entries(cfg.shifts)
           .filter(([key]) => !FIXED_KEYS.has(key))
           .map(([key, s]) => ({key, label: s.label || key, jam: s.jam || ""}));
       }
 
-      // Toggle mode libur
+      // ── Load activeShifts dari Firebase ──
+      if (cfg.activeShifts) {
+        activeShifts = Object.assign({S1:true,S2:true,S2O:true,S3:true,FD:true}, cfg.activeShifts);
+      }
+      // Sinkronisasi UI toggle per-shift
+      ["S1","S2","S2O","S3","FD"].forEach(key => {
+        const cb = document.getElementById("active-" + key);
+        if (cb) cb.checked = activeShifts[key] !== false;
+        syncShiftActiveBadge(key);
+        updateShiftInputWrap(key);
+      });
+
       if (typeof cfg.useLiburShift === "boolean") useLiburShift = cfg.useLiburShift;
       document.getElementById("toggleLiburShift").checked = useLiburShift;
       syncToggleBadge();
 
-      // Tanggal + judul
       if (cfg.tanggalMulai)
         document.getElementById("tanggalMulai").value = cfg.tanggalMulai;
       if (cfg.tampilan?.judul)
         document.getElementById("judulInput").value = cfg.tampilan.judul;
 
-      // Hari libur
       if (cfg.hariLibur) {
         hariLibur = Array.isArray(cfg.hariLibur)
           ? cfg.hariLibur
@@ -506,11 +589,35 @@
         cb.checked = hariLibur.includes(cb.value);
       });
 
-      // Jadwal tersimpan
       if (cfg.jadwal) currentJadwal = cfg.jadwal;
 
     } catch (e) { console.error("Gagal load config:", e); }
   }
+
+  // ─── Per-shift toggle helpers ─────────────────────────────
+  function syncShiftActiveBadge(key) {
+    const badge  = document.getElementById("badge-active-" + key);
+    const isOn   = activeShifts[key] !== false;
+    if (!badge) return;
+    badge.textContent = isOn ? "ON" : "OFF";
+    badge.className   = "toggle-badge sm" + (isOn ? " on" : "");
+  }
+
+  function updateShiftInputWrap(key) {
+    const wrap = document.getElementById("wrap-" + key);
+    if (!wrap) return;
+    const isOn = activeShifts[key] !== false;
+    if (isOn) wrap.classList.remove("inactive");
+    else      wrap.classList.add("inactive");
+  }
+
+  window.onShiftActiveChange = (key) => {
+    const cb = document.getElementById("active-" + key);
+    activeShifts[key] = cb.checked;
+    syncShiftActiveBadge(key);
+    updateShiftInputWrap(key);
+    renderJadwal();
+  };
 
   // ─── Karyawan ─────────────────────────────────────────────
   function renderKaryawan() {
@@ -559,12 +666,10 @@
   function renderCustomShifts() {
     const list = document.getElementById("customShiftList");
     list.innerHTML = "";
-
     if (customShiftsList.length === 0) {
       list.innerHTML = '<p class="cs-empty">Belum ada shift kustom</p>';
       return;
     }
-
     customShiftsList.forEach((s, i) => {
       const div = document.createElement("div");
       div.className = "custom-shift-item";
@@ -577,7 +682,6 @@
     });
   }
 
-  // Reads current UI inputs → updates customShiftsList in memory
   function syncCustomShiftsFromUI() {
     const items = document.querySelectorAll(".custom-shift-item");
     customShiftsList = [];
@@ -604,7 +708,7 @@
     renderJadwal();
   };
 
-  // ─── Toggle ───────────────────────────────────────────────
+  // ─── Toggle mode libur ────────────────────────────────────
   function syncToggleBadge() {
     const badge = document.getElementById("toggleBadge");
     badge.textContent = useLiburShift ? "ON" : "OFF";
@@ -617,11 +721,10 @@
     renderJadwal();
   };
 
-  // ─── Build shift options for a given day ─────────────────
+  // ─── Build shift options (with activeShifts filter) ───────
   function getShiftOpts(isLiburDay) {
     const useLibur = isLiburDay && useLiburShift;
 
-    // Pull live custom-shift abbreviations from the DOM inputs
     const liveCustom = [];
     document.querySelectorAll(".custom-shift-item").forEach(item => {
       const k = item.querySelector(".cs-key")?.value.trim().toUpperCase();
@@ -629,7 +732,6 @@
         liveCustom.push({key: k, label: k});
       }
     });
-    // Fallback to in-memory list (e.g. right after loadConfig)
     if (liveCustom.length === 0 && customShiftsList.length > 0) {
       customShiftsList.forEach(s => {
         if (s.key && !FIXED_KEYS.has(s.key) && s.key !== "OFF")
@@ -637,9 +739,22 @@
       });
     }
 
-    const fixed = useLibur
-      ? [{key:"S1",label:"S1"},{key:"S2O",label:"S2O"},{key:"FD",label:"FD"}]
-      : [{key:"S1",label:"S1"},{key:"S2",label:"S2"},{key:"S3",label:"S3"},{key:"FD",label:"FD"}];
+    // Fixed opts — disaring oleh activeShifts
+    let fixed;
+    if (useLibur) {
+      fixed = [
+        {key:"S1",  label:"S1"},
+        {key:"S2O", label:"S2O"},
+        {key:"FD",  label:"FD"},
+      ].filter(s => activeShifts[s.key] !== false);
+    } else {
+      fixed = [
+        {key:"S1", label:"S1"},
+        {key:"S2", label:"S2"},
+        {key:"S3", label:"S3"},
+        {key:"FD", label:"FD"},
+      ].filter(s => activeShifts[s.key] !== false);
+    }
 
     return [...fixed, ...liveCustom, {key:"OFF",label:"OFF"}];
   }
@@ -708,9 +823,8 @@
     }
   }
 
-  // ─── Save: Jam Shift + Toggle ─────────────────────────────
+  // ─── Save: Jam Shift + Toggle + activeShifts ─────────────
   window.saveJam = () => withLoading("saveJamBtn", "SIMPAN JAM SHIFT", async () => {
-    // Fixed shifts
     const shifts = {
       S1:  {label:"S1",         jam: document.getElementById("jam-S1").value,  bg:"#1e3a5f", color:"#93c5fd"},
       S2:  {label:"S2",         jam: document.getElementById("jam-S2").value,  bg:"#3b1f5e", color:"#c4b5fd"},
@@ -719,7 +833,6 @@
       FD:  {label:"FULL DAY",   jam: document.getElementById("jam-FD").value,  bg:"#4a3000", color:"#fcd34d"},
     };
 
-    // Custom shifts from UI
     const csItems = document.querySelectorAll(".custom-shift-item");
     let colorIdx = 0;
     csItems.forEach(item => {
@@ -733,13 +846,14 @@
       }
     });
 
-    // Sync in-memory list after save
     customShiftsList = Object.entries(shifts)
       .filter(([key]) => !FIXED_KEYS.has(key))
       .map(([key, s]) => ({key, label: s.label, jam: s.jam}));
 
     await set(ref(db, "config/shifts"), shifts);
     await set(ref(db, "config/useLiburShift"), useLiburShift);
+    // ── Simpan activeShifts ke Firebase ──
+    await set(ref(db, "config/activeShifts"), activeShifts);
 
     renderCustomShifts();
     renderJadwal();
@@ -788,7 +902,6 @@
     document.querySelectorAll(".menu button").forEach(b => b.classList.remove("active-tab"));
     document.getElementById(pageId).classList.add("active");
     document.getElementById(tabId).classList.add("active-tab");
-    // Re-render jadwal when opening the jadwal tab so custom shifts are picked up live
     if (pageId === "jadwalPage") renderJadwal();
   };
 </script>
