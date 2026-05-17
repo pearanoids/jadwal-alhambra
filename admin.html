@@ -569,9 +569,9 @@
       const div = document.createElement("div");
       div.className = "custom-shift-item";
       div.innerHTML = `
-        <input type="text" class="cs-key"   value="${s.key}"   placeholder="C1"            maxlength="5">
+        <input type="text" class="cs-key"   value="${s.key}"   placeholder="S4"            maxlength="5">
         <input type="text" class="cs-label" value="${s.label}" placeholder="Nama Shift">
-        <input type="text" class="cs-jam"   value="${s.jam}"   placeholder="00:00-00:00">
+        <input type="text" class="cs-jam"   value="${s.jam}"   placeholder="00:00 - 00:00">
         <button class="remove-btn" onclick="removeCustomShift(${i})" title="Hapus">×</button>`;
       list.appendChild(div);
     });
