@@ -97,35 +97,59 @@
   .add-karyawan-btn:hover{border-color:#3b82f6;color:#3b82f6}
 
   /* ── Custom Shift list ── */
-  .cs-col-header{
+
+  /* Header kolom & baris item pakai grid yang sama persis */
+  .cs-col-header,
+  .custom-shift-item{
     display:grid;
-    grid-template-columns:50px 1fr 94px 30px;
-    gap:3px;margin-bottom:3px;
+    grid-template-columns:38px 1fr 76px 26px;
+    gap:3px;
+    align-items:center;
   }
+  .cs-col-header{margin-bottom:3px;}
+  .custom-shift-item{margin-bottom:4px;}
+  .custom-shift-item:last-child{margin-bottom:0;}
+
   .cs-col-header span{
     font-size:7px;color:#4a5568;font-weight:700;
     letter-spacing:0.4px;text-transform:uppercase;
     padding-left:2px;
   }
-  .custom-shift-item{display:flex;align-items:center;gap:3px;margin-bottom:4px}
-  .custom-shift-item:last-child{margin-bottom:0}
-  .cs-key{
-    width:50px;height:28px;background:#0d1117;border:1px solid #30363d;
-    border-radius:4px;color:#fcd34d;padding:0 5px;font-size:9px;font-weight:700;
-    text-transform:uppercase;outline:none;flex-shrink:0;letter-spacing:0.5px;
-  }
-  .cs-key:focus{border-color:#3b82f6}
-  .cs-label{
-    flex:1;height:28px;background:#0d1117;border:1px solid #30363d;
-    border-radius:4px;color:white;padding:0 7px;font-size:10px;outline:none;
-  }
-  .cs-label:focus{border-color:#3b82f6}
+
+  /* Semua input di dalam custom-shift mengikuti lebar cell grid */
+  .cs-key,
+  .cs-label,
   .cs-jam{
-    width:94px;height:28px;background:#0d1117;border:1px solid #30363d;
-    border-radius:4px;color:white;padding:0 5px;font-size:9px;
-    outline:none;flex-shrink:0;
+    width:100%;
+    min-width:0;
+    box-sizing:border-box;
+    height:26px;
+    background:#0d1117;
+    border:1px solid #30363d;
+    border-radius:4px;
+    color:white;
+    outline:none;
   }
-  .cs-jam:focus{border-color:#3b82f6}
+  .cs-key:focus,
+  .cs-label:focus,
+  .cs-jam:focus{border-color:#3b82f6;}
+
+  .cs-key{
+    color:#fcd34d;
+    padding:0 4px;
+    font-size:9px;font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+  .cs-label{
+    padding:0 6px;
+    font-size:10px;
+  }
+  .cs-jam{
+    padding:0 5px;
+    font-size:9px;
+  }
+
   .cs-empty{
     font-size:8px;color:#4a5568;text-align:center;
     padding:8px 0 4px;
@@ -304,13 +328,12 @@
         <input type="text" id="jam-S3" placeholder="Contoh: 00:00 - 08:00" />
       </div>
 
-      <!-- ▼ NEW: Full Day shift -->
       <div class="setting-item">
         <h3>Full Day (FD)</h3>
         <input type="text" id="jam-FD" placeholder="Contoh: 08:00 - 00:00" />
       </div>
 
-      <!-- ▼ NEW: Custom Shifts -->
+      <!-- Custom Shifts -->
       <div class="setting-item">
         <h3>Shift Kustom</h3>
         <p class="karyawan-note">
@@ -319,7 +342,10 @@
           <strong style="color:#fcd34d">Simpan terlebih dahulu sebelum membuka tab Atur Jadwal.</strong>
         </p>
         <div class="cs-col-header">
-          <span>Singkatan</span><span>Nama Lengkap</span><span>Jam Kerja</span><span></span>
+          <span>Singkatan</span>
+          <span>Nama Lengkap</span>
+          <span>Jam Kerja</span>
+          <span></span>
         </div>
         <div id="customShiftList"></div>
         <button class="add-karyawan-btn" onclick="addCustomShift()">+ Tambah Shift Kustom</button>
@@ -545,7 +571,7 @@
       div.innerHTML = `
         <input type="text" class="cs-key"   value="${s.key}"   placeholder="C1"            maxlength="5">
         <input type="text" class="cs-label" value="${s.label}" placeholder="Nama Shift">
-        <input type="text" class="cs-jam"   value="${s.jam}"   placeholder="00:00 - 00:00">
+        <input type="text" class="cs-jam"   value="${s.jam}"   placeholder="00:00-00:00">
         <button class="remove-btn" onclick="removeCustomShift(${i})" title="Hapus">×</button>`;
       list.appendChild(div);
     });
