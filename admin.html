@@ -49,9 +49,9 @@
     border-radius:8px;padding:4px;flex-wrap:wrap;
   }
   .menu button{
-    flex:1;min-width:60px;height:28px;border:none;border-radius:6px;
+    flex:1;min-width:55px;height:28px;border:none;border-radius:6px;
     background:#21262d;color:#8b93a7;
-    font-size:8px;font-weight:700;letter-spacing:0.3px;
+    font-size:7.5px;font-weight:700;letter-spacing:0.3px;
     cursor:pointer;transition:0.15s;white-space:nowrap;
   }
   .menu button:hover{background:#2d333b;color:white}
@@ -71,6 +71,59 @@
     border-radius:4px;color:white;padding:0 8px;font-size:11px;outline:none;
   }
   .setting-item input:focus{border-color:#3b82f6}
+
+  /* ── Karyawan list ── */
+  .karyawan-note{font-size:8px;color:#8b93a7;margin-bottom:7px;line-height:1.5}
+  .karyawan-item{display:flex;align-items:center;gap:4px;margin-bottom:4px}
+  .karyawan-item:last-child{margin-bottom:0}
+  .karyawan-num{font-size:9px;color:#8b93a7;width:16px;text-align:right;flex-shrink:0}
+  .karyawan-item input{
+    flex:1;height:28px;background:#0d1117;border:1px solid #30363d;
+    border-radius:4px;color:white;padding:0 8px;font-size:11px;outline:none;
+  }
+  .karyawan-item input:focus{border-color:#3b82f6}
+  .remove-btn{
+    width:26px;height:28px;border:none;border-radius:4px;
+    background:#3d1f1f;color:#fca5a5;font-size:15px;line-height:1;
+    cursor:pointer;flex-shrink:0;transition:0.15s;
+  }
+  .remove-btn:hover{background:#5a2d2d}
+  .add-karyawan-btn{
+    width:100%;height:28px;margin-top:6px;
+    border:1px dashed #30363d;border-radius:4px;
+    background:transparent;color:#8b93a7;font-size:9px;font-weight:700;
+    cursor:pointer;transition:0.15s;
+  }
+  .add-karyawan-btn:hover{border-color:#3b82f6;color:#3b82f6}
+
+  /* ── Toggle switch ── */
+  .toggle-row{
+    display:flex;align-items:center;
+    gap:8px;
+  }
+  .toggle-labels{flex:1}
+  .toggle-title{font-size:9px;font-weight:700;color:#e5e7eb}
+  .toggle-desc{font-size:7.5px;color:#8b93a7;margin-top:2px;line-height:1.5}
+  .toggle-badge{
+    font-size:8px;font-weight:700;padding:2px 6px;
+    border-radius:4px;flex-shrink:0;
+    background:#21262d;color:#8b93a7;border:1px solid #30363d;
+    transition:0.15s;min-width:28px;text-align:center;
+  }
+  .toggle-badge.on{background:#0f2d1a;color:#86efac;border-color:#238636}
+  .toggle-switch{position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0}
+  .toggle-switch input{opacity:0;width:0;height:0}
+  .toggle-slider{
+    position:absolute;cursor:pointer;inset:0;
+    background:#30363d;border-radius:22px;transition:0.2s;
+  }
+  .toggle-slider::before{
+    content:"";position:absolute;
+    width:16px;height:16px;left:3px;bottom:3px;
+    background:white;border-radius:50%;transition:0.2s;
+  }
+  .toggle-switch input:checked + .toggle-slider{background:#238636}
+  .toggle-switch input:checked + .toggle-slider::before{transform:translateX(18px)}
 
   /* Jadwal section */
   .jadwal-container{display:flex;flex-direction:column;gap:4px}
@@ -105,7 +158,7 @@
   .shift-group input[value="OFF"]:checked + label{background:maroon;border-color:#9b1c1c;color:#fca5a5}
 
   /* Hari libur checkboxes */
-   .libur-group{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:4px}
+  .libur-group{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:4px}
   .libur-group label{
     height:26px;padding:0 2px;background:#21262d;border:1px solid #30363d;
     border-radius:4px;display:flex;align-items:center;justify-content:center;
@@ -152,10 +205,27 @@
 
   <!-- Tab buttons -->
   <div class="menu">
-    <button id="tab-jam"     onclick="showPage('jamPage','tab-jam')">Setting Jam</button>
-    <button id="tab-tanggal" onclick="showPage('tanggalPage','tab-tanggal')">Atur Tanggal</button>
-    <button id="tab-jadwal"  onclick="showPage('jadwalPage','tab-jadwal')">Atur Jadwal</button>
-    <button id="tab-libur"   onclick="showPage('liburPage','tab-libur')">Hari Libur</button>
+    <button id="tab-karyawan" onclick="showPage('karyawanPage','tab-karyawan')">Nama Karyawan</button>
+    <button id="tab-jam"      onclick="showPage('jamPage','tab-jam')">Setting Jam</button>
+    <button id="tab-tanggal"  onclick="showPage('tanggalPage','tab-tanggal')">Atur Tanggal</button>
+    <button id="tab-jadwal"   onclick="showPage('jadwalPage','tab-jadwal')">Atur Jadwal</button>
+    <button id="tab-libur"    onclick="showPage('liburPage','tab-libur')">Hari Libur</button>
+  </div>
+
+  <!-- ── TAB 0: Nama Karyawan ───────────────────────────── -->
+  <div class="page" id="karyawanPage">
+    <div class="setting-list">
+      <div class="setting-item">
+        <h3>Daftar Nama Karyawan</h3>
+        <p class="karyawan-note">
+          Tambah atau hapus karyawan sesuai kebutuhan.<br>
+          Setelah menyimpan, atur ulang jadwal di tab "Atur Jadwal".
+        </p>
+        <div id="karyawanList"></div>
+        <button class="add-karyawan-btn" onclick="addKaryawan()">+ Tambah Karyawan</button>
+      </div>
+    </div>
+    <button class="save-btn" id="saveKaryawanBtn" onclick="saveKaryawan()">SIMPAN NAMA KARYAWAN</button>
   </div>
 
   <!-- ── TAB 1: Setting Jam Shift ───────────────────────── -->
@@ -173,6 +243,26 @@
         <h3>Shift 2 (OFF 1) — khusus hari libur</h3>
         <input type="text" id="jam-S2O" placeholder="Contoh: 16:00 - 00:00" />
       </div>
+
+      <!-- Toggle shift hari libur -->
+      <div class="setting-item">
+        <h3>Mode Shift Hari Libur</h3>
+        <div class="toggle-row">
+          <div class="toggle-labels">
+            <div class="toggle-title">Aktifkan Shift Khusus Hari Libur</div>
+            <div class="toggle-desc">
+              ON &rarr; hari libur: S1 · S2 (OFF 1) · OFF<br>
+              OFF &rarr; semua hari: S1 · S2 · S3 · OFF
+            </div>
+          </div>
+          <span class="toggle-badge" id="toggleBadge">OFF</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggleLiburShift" onchange="onToggleChange()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
       <div class="setting-item">
         <h3>Shift 3</h3>
         <input type="text" id="jam-S3" placeholder="Contoh: 00:00 - 08:00" />
@@ -211,13 +301,13 @@
           Pilih untuk mengatur hari libur.
         </p>
         <div class="libur-group">
-          <label><input type="checkbox" class="libur-cb" value="Senin"   /><span>SENIN</span></label>
-          <label><input type="checkbox" class="libur-cb" value="Selasa"  /><span>SELASA</span></label>
-          <label><input type="checkbox" class="libur-cb" value="Rabu"    /><span>RABU</span></label>
-          <label><input type="checkbox" class="libur-cb" value="Kamis"   /><span>KAMIS</span></label>
-          <label><input type="checkbox" class="libur-cb" value="Jumat"   /><span>JUMAT</span></label>
-          <label><input type="checkbox" class="libur-cb" value="Sabtu"   /><span>SABTU</span></label>
-          <label><input type="checkbox" class="libur-cb" value="Minggu"  /><span>MINGGU</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Senin"  /><span>SENIN</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Selasa" /><span>SELASA</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Rabu"   /><span>RABU</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Kamis"  /><span>KAMIS</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Jumat"  /><span>JUMAT</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Sabtu"  /><span>SABTU</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Minggu" /><span>MINGGU</span></label>
         </div>
       </div>
     </div>
@@ -243,40 +333,44 @@
     messagingSenderId: "268642441303",
     appId:             "1:268642441303:web:0e851cdd27daf4d1a36b12"
   };
-  // ═══════════════════════════════════════════════════════════
 
   const app  = initializeApp(firebaseConfig);
   const db   = getDatabase(app);
   const auth = getAuth(app);
 
-  // ─── Konfigurasi karyawan ─────
-  const KARYAWAN  = ["ICHA", "HIKMAH", "SYDNEY"];
   const HARI_LIST = ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"];
 
-  let hariLibur    = ["Kamis","Jumat","Minggu"];
+  let KARYAWAN      = ["ICHA","HIKMAH","SYDNEY"];
+  let hariLibur     = ["Kamis","Jumat","Minggu"];
+  let useLiburShift = true;
   let currentJadwal = null;
 
-  // ─── Auth: cek login, redirect kalau belum login ──────────
+  // ─── Auth ─────────────────────────────────────────────────
   onAuthStateChanged(auth, async user => {
-    if (!user) {
-      window.location.href = "index.html";
-      return;
-    }
+    if (!user) { window.location.href = "index.html"; return; }
     document.getElementById("userEmail").textContent = user.email;
     await loadConfig();
+    renderKaryawan();
     renderJadwal();
-    showPage("jamPage", "tab-jam");
+    showPage("karyawanPage", "tab-karyawan");
     document.getElementById("loadingOverlay").style.display = "none";
   });
 
-  // ─── Load seluruh config dari Firebase ────────────────────
+  // ─── Load config ──────────────────────────────────────────
   async function loadConfig() {
     try {
       const snap = await get(ref(db, "config"));
       if (!snap.exists()) return;
       const cfg = snap.val();
 
-      // Populate jam
+      // Karyawan
+      if (cfg.karyawan) {
+        KARYAWAN = Array.isArray(cfg.karyawan)
+          ? cfg.karyawan
+          : Object.values(cfg.karyawan);
+      }
+
+      // Shifts
       if (cfg.shifts) {
         document.getElementById("jam-S1").value  = cfg.shifts.S1?.jam  || "";
         document.getElementById("jam-S2").value  = cfg.shifts.S2?.jam  || "";
@@ -284,13 +378,18 @@
         document.getElementById("jam-S3").value  = cfg.shifts.S3?.jam  || "";
       }
 
-      // Populate tanggal + judul
+      // Toggle mode libur
+      if (typeof cfg.useLiburShift === "boolean") useLiburShift = cfg.useLiburShift;
+      document.getElementById("toggleLiburShift").checked = useLiburShift;
+      syncToggleBadge();
+
+      // Tanggal + judul
       if (cfg.tanggalMulai)
         document.getElementById("tanggalMulai").value = cfg.tanggalMulai;
       if (cfg.tampilan?.judul)
         document.getElementById("judulInput").value = cfg.tampilan.judul;
 
-      // Populate hari libur
+      // Hari libur
       if (cfg.hariLibur) {
         hariLibur = Array.isArray(cfg.hariLibur)
           ? cfg.hariLibur
@@ -300,13 +399,70 @@
         cb.checked = hariLibur.includes(cb.value);
       });
 
-      // Simpan jadwal untuk pre-select radio
+      // Jadwal tersimpan
       if (cfg.jadwal) currentJadwal = cfg.jadwal;
 
-    } catch (e) {
-      console.error("Gagal load config:", e);
-    }
+    } catch (e) { console.error("Gagal load config:", e); }
   }
+
+  // ─── Karyawan: render ─────────────────────────────────────
+  function renderKaryawan() {
+    const list = document.getElementById("karyawanList");
+    list.innerHTML = "";
+    KARYAWAN.forEach((nama, i) => {
+      const div = document.createElement("div");
+      div.className = "karyawan-item";
+      div.innerHTML = `
+        <span class="karyawan-num">${i + 1}.</span>
+        <input type="text" class="karyawan-input"
+               value="${nama}" placeholder="Nama karyawan ${i + 1}">
+        <button class="remove-btn" onclick="removeKaryawan(${i})" title="Hapus">×</button>`;
+      list.appendChild(div);
+    });
+  }
+
+  // ─── Karyawan: tambah ────────────────────────────────────
+  window.addKaryawan = () => {
+    KARYAWAN.push("");
+    renderKaryawan();
+    const inputs = document.querySelectorAll(".karyawan-input");
+    inputs[inputs.length - 1]?.focus();
+  };
+
+  // ─── Karyawan: hapus ─────────────────────────────────────
+  window.removeKaryawan = (idx) => {
+    if (KARYAWAN.length <= 1) { alert("Minimal 1 karyawan!"); return; }
+    KARYAWAN.splice(idx, 1);
+    renderKaryawan();
+  };
+
+  // ─── Karyawan: simpan ────────────────────────────────────
+  window.saveKaryawan = () => withLoading("saveKaryawanBtn", "SIMPAN NAMA KARYAWAN", async () => {
+    const inputs  = document.querySelectorAll(".karyawan-input");
+    const newList = [];
+    inputs.forEach(inp => {
+      const v = inp.value.trim().toUpperCase();
+      if (v) newList.push(v);
+    });
+    if (newList.length === 0) throw new Error("Minimal 1 nama karyawan harus diisi!");
+    KARYAWAN = newList;
+    await set(ref(db, "config/karyawan"), KARYAWAN);
+    renderKaryawan();
+    renderJadwal();
+  });
+
+  // ─── Toggle: sinkronisasi badge ──────────────────────────
+  function syncToggleBadge() {
+    const badge = document.getElementById("toggleBadge");
+    badge.textContent = useLiburShift ? "ON" : "OFF";
+    badge.className   = "toggle-badge" + (useLiburShift ? " on" : "");
+  }
+
+  window.onToggleChange = () => {
+    useLiburShift = document.getElementById("toggleLiburShift").checked;
+    syncToggleBadge();
+    renderJadwal();
+  };
 
   // ─── Render tab Atur Jadwal ───────────────────────────────
   function renderJadwal() {
@@ -320,13 +476,13 @@
           <div class="card-body">`;
 
       HARI_LIST.forEach((hari, hIdx) => {
-        const isLibur = hariLibur.includes(hari);
+        const isLibur  = hariLibur.includes(hari);
+        const useLibur = isLibur && useLiburShift;
 
-        const shiftOpts = isLibur
+        const shiftOpts = useLibur
           ? [{key:"S1",label:"S1"},{key:"S2O",label:"S2 (OFF 1)"},{key:"OFF",label:"OFF"}]
           : [{key:"S1",label:"S1"},{key:"S2",label:"S2"},{key:"S3",label:"S3"},{key:"OFF",label:"OFF"}];
 
-        // Ambil nilai tersimpan
         const savedArr = currentJadwal?.[nama];
         const savedVal = savedArr
           ? (Array.isArray(savedArr) ? savedArr[hIdx] : Object.values(savedArr)[hIdx])
@@ -334,7 +490,7 @@
 
         html += `
           <div class="row">
-            <div class="hari-lbl ${isLibur ? "off-day" : ""}">${hari}</div>
+            <div class="hari-lbl ${useLibur ? "off-day" : ""}">${hari}</div>
             <div class="shift-group">`;
 
         shiftOpts.forEach((s, sIdx) => {
@@ -353,7 +509,7 @@
     });
   }
 
-  // ─── Helper: tombol loading state ─────────────────────────
+  // ─── Helper: loading state tombol ────────────────────────
   async function withLoading(btnId, originalLabel, fn) {
     const btn = document.getElementById(btnId);
     btn.textContent = "Menyimpan...";
@@ -376,7 +532,7 @@
     }
   }
 
-  // ─── Save: Jam Shift ──────────────────────────────────────
+  // ─── Save: Jam Shift + toggle ─────────────────────────────
   window.saveJam = () => withLoading("saveJamBtn", "SIMPAN JAM SHIFT", async () => {
     const shifts = {
       S1:  { label:"S1",         jam: document.getElementById("jam-S1").value,  bg:"#1e3a5f", color:"#93c5fd" },
@@ -385,6 +541,7 @@
       S3:  { label:"S3",         jam: document.getElementById("jam-S3").value,  bg:"#1f3b2e", color:"#86efac" },
     };
     await set(ref(db, "config/shifts"), shifts);
+    await set(ref(db, "config/useLiburShift"), useLiburShift);
   });
 
   // ─── Save: Tanggal & Judul ────────────────────────────────
@@ -402,7 +559,7 @@
     document.querySelectorAll(".libur-cb:checked").forEach(cb => newLibur.push(cb.value));
     hariLibur = newLibur;
     await set(ref(db, "config/hariLibur"), hariLibur);
-    renderJadwal(); // re-render jadwal dengan hari libur baru
+    renderJadwal();
   });
 
   // ─── Save: Jadwal karyawan ────────────────────────────────
