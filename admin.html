@@ -461,13 +461,13 @@
           Pilih untuk mengatur hari libur.
         </p>
         <div class="libur-group">
-          <label><input type="checkbox" class="libur-cb" value="Senin"  onchange="onLiburChange()" /><span>SENIN</span></label>
-          <label><input type="checkbox" class="libur-cb" value="Selasa" onchange="onLiburChange()" /><span>SELASA</span></label>
-          <label><input type="checkbox" class="libur-cb" value="Rabu"   onchange="onLiburChange()" /><span>RABU</span></label>
-          <label><input type="checkbox" class="libur-cb" value="Kamis"  onchange="onLiburChange()" /><span>KAMIS</span></label>
-          <label><input type="checkbox" class="libur-cb" value="Jumat"  onchange="onLiburChange()" /><span>JUMAT</span></label>
-          <label><input type="checkbox" class="libur-cb" value="Sabtu"  onchange="onLiburChange()" /><span>SABTU</span></label>
-          <label><input type="checkbox" class="libur-cb" value="Minggu" onchange="onLiburChange()" /><span>MINGGU</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Senin"  /><span>SENIN</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Selasa" /><span>SELASA</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Rabu"   /><span>RABU</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Kamis"  /><span>KAMIS</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Jumat"  /><span>JUMAT</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Sabtu"  /><span>SABTU</span></label>
+          <label><input type="checkbox" class="libur-cb" value="Minggu" /><span>MINGGU</span></label>
         </div>
       </div>
     </div>
@@ -780,7 +780,7 @@
 
         html += `
           <div class="row">
-            <div class="hari-lbl ${isLibur ? "off-day" : ""}">${hari}</div>
+            <div class="hari-lbl ${isLibur && useLiburShift ? "off-day" : ""}">${hari}</div>
             <div class="shift-group">`;
 
         shiftOpts.forEach((s, sIdx) => {
@@ -866,13 +866,6 @@
     await set(ref(db, "config/tanggalMulai"), tanggalMulai);
     await set(ref(db, "config/tampilan"), {judul, subjudul: ""});
   });
-
-  // ─── Live update hariLibur saat checkbox diubah ──────────
-  window.onLiburChange = () => {
-    hariLibur = [];
-    document.querySelectorAll(".libur-cb:checked").forEach(cb => hariLibur.push(cb.value));
-    renderJadwal();
-  };
 
   // ─── Save: Hari Libur ─────────────────────────────────────
   window.saveLibur = () => withLoading("saveLiburBtn", "SIMPAN HARI LIBUR", async () => {
