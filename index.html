@@ -102,6 +102,15 @@
   const HARI = ["SENIN","SELASA","RABU","KAMIS","JUMAT","SABTU","MINGGU"];
   const pad  = n => String(n).padStart(2, "0");
 
+  // ── Fallback label jika data Firebase masih pakai label lama ──
+  const LABEL_FALLBACK = {
+    S1:  "SHIFT 1",
+    S2:  "SHIFT 2",
+    S3:  "SHIFT 3",
+    S2O: "S2 (OFF 1)",
+    FD:  "FULL DAY",
+  };
+
   // ─── Date helpers ────────────────────────────────────────
   function formatTgl(d) {
     return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
@@ -128,13 +137,22 @@
   }
 
   // ─── Render helpers ───────────────────────────────────────
+  function getDisplayLabel(kode, shiftData) {
+    // Gunakan label dari Firebase, jika masih sama dengan kode (lama)
+    // atau tidak ada, pakai fallback yang sudah benar
+    const raw = shiftData?.label;
+    if (!raw || raw === kode) return LABEL_FALLBACK[kode] || kode;
+    return raw;
+  }
+
   function renderBadge(kode, shifts) {
     if (kode === "OFF")
       return `<div class="badge badge-off">OFF</div>`;
     const s = shifts[kode];
     if (!s)
       return `<div class="badge" style="background:#333;color:#aaa">${kode}</div>`;
-    return `<div class="badge" style="background:${s.bg};color:${s.color}">${s.label}</div>`;
+    const label = getDisplayLabel(kode, s);
+    return `<div class="badge" style="background:${s.bg};color:${s.color}">${label}</div>`;
   }
 
   function renderJam(kode, shifts) {
